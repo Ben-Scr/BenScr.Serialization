@@ -1,0 +1,22 @@
+[
+  {
+    "sha256": "285ff0529f8b087bfa0c9ba6320a4bfa193fba6b5ffd4ef84515ecb1ec226d7e",
+    "file": "legacy.json"
+  },
+  {
+    "sha256": "d42d9ff3b980d7bea7a66ef590d0e8800027f6c46241684c9d97e5712911286b",
+    "file": "legacy.json.gz"
+  },
+  {
+    "sha256": "fde6445c003642dafee428cf35d8fca4368140a74dd4f1ae73c34032450ef46a",
+    "file": "legacy.msgpack"
+  },
+  {
+    "sha256": "c467a37794961bcff51311de931334dde0b56f5d7722a0d32eb4ea8c103436b6",
+    "file": "legacy.xml"
+  },
+  {
+    "sha256": "8c442d10cae3ce18bf6e2fabd6f5259199f4b377ff2d16d2f9df7c58967558ec",
+    "file": "legacy.xml.gz"
+  }
+]

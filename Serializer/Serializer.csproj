@@ -1,40 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-
-		<PackageId>SerializerCS</PackageId>
-		<Version>1.0.9</Version>
-		<Authors>Ben Schneider</Authors>
-		<Company>Ben Schneider</Company>
-		<Description>A C# Library which provides Json, Xml and Binary Serialization and Deserialization</Description>
-
-		<RepositoryUrl>https://github.com/Ben-Scr/Serializer</RepositoryUrl>
-		<PackageProjectUrl>		https://ko-fi.com/benscr</PackageProjectUrl>
-		
-		<RepositoryType>git</RepositoryType>
-
-		<PackageTags>
-			Serialization;
-			Deserialization;
-			Json;
-			Xml;
-			Binary;
-			File Conversion;
-		</PackageTags>
-		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageIcon>icon.png</PackageIcon>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="../README.md" Pack="true" PackagePath="\" />
-		<None Include="../LICENSE.txt" Pack="true" PackagePath="\" />
-		<None Include="icon.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="MessagePack" Version="3.1.4" />
-	</ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <PackageId>BenScr.Serialization</PackageId>
+    <AssemblyName>BenScr.Serialization</AssemblyName>
+    <RootNamespace>BenScr.Serialization</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>Ben Schneider</Authors>
+    <Description>Bounded JSON, XML and MessagePack serialization, typed conversion and authenticated encrypted JSON.</Description>
+    <PackageTags>serialization;json;xml;messagepack;compression</PackageTags>
+    <RepositoryUrl>https://github.com/Ben-Scr/BenScr.Serialization</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Ben-Scr/BenScr.Serialization</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MessagePack" Version="[3.1.12]" />
+    <None Include="../README.md" Pack="true" PackagePath="/" />
+    <None Include="../LICENSE.txt" Pack="true" PackagePath="/" />
+    <None Include="../branding/BenScr_Icon_Master.png" Pack="true" PackagePath="/icon.png" />
+  </ItemGroup>
 </Project>

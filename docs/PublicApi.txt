@@ -1,0 +1,56 @@
+BenScr.Serialization.Binary : System.Object
+  Field MessagePack.MessagePackSerializerOptions DefaultMsgPack
+  Method Byte[] Serialize[T](T, MessagePack.MessagePackSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Deserialize[T](Byte[], MessagePack.MessagePackSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Load[T](System.String, T, MessagePack.MessagePackSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Read[T](System.IO.Stream, MessagePack.MessagePackSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method Void Save[T](System.String, T, MessagePack.MessagePackSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method Void Write[T](System.IO.Stream, T, MessagePack.MessagePackSerializerOptions, BenScr.Serialization.SerializationLimits)
+BenScr.Serialization.FileConverter : System.Object
+  Method Void ConvertTo[T](System.String, BenScr.Serialization.Format, BenScr.Serialization.Format, System.String, BenScr.Serialization.SerializationLimits)
+BenScr.Serialization.Format : System.Enum
+  Field BenScr.Serialization.Format Binary
+  Field BenScr.Serialization.Format Json
+  Field BenScr.Serialization.Format Xml
+  Field Int32 value__
+BenScr.Serialization.Json : System.Object
+  Field System.Text.Json.JsonSerializerOptions DefaultJson
+  Field System.Text.Json.JsonSerializerOptions FormatedJson
+  Method Byte[] SerializeCompressed[T](T, System.IO.Compression.CompressionLevel, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method System.String Serialize[T](T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method System.Text.Json.JsonSerializerOptions get_FormattedJson()
+  Method T DeserializeCompressed[T](Byte[], System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Deserialize[T](System.String, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T LoadCompressed[T](System.String, T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Load[T](System.String, T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Read[T](System.IO.Stream, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method Void SaveCompressed[T](System.String, T, System.IO.Compression.CompressionLevel, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method Void Save[T](System.String, T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method Void Write[T](System.IO.Stream, T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Property System.Text.Json.JsonSerializerOptions FormattedJson
+BenScr.Serialization.JsonSecure : System.Object
+  Method Byte[] Encrypt[T](System.String, T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Decrypt[T](System.String, Byte[], System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method T Load[T](System.String, System.String, T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+  Method Void Save[T](System.String, System.String, T, System.Text.Json.JsonSerializerOptions, BenScr.Serialization.SerializationLimits)
+BenScr.Serialization.SerializationLimits : System.Object
+  Constructor Void .ctor(Int32, Int32)
+  Field Int32 DefaultMaxBytes
+  Field Int32 DefaultMaxDepth
+  Method BenScr.Serialization.SerializationLimits get_Default()
+  Method Int32 get_MaxBytes()
+  Method Int32 get_MaxDepth()
+  Property BenScr.Serialization.SerializationLimits Default
+  Property Int32 MaxBytes
+  Property Int32 MaxDepth
+BenScr.Serialization.Xml : System.Object
+  Method Byte[] SerializeCompressed[T](T, System.IO.Compression.CompressionLevel, BenScr.Serialization.SerializationLimits)
+  Method Byte[] Serialize[T](T, BenScr.Serialization.SerializationLimits)
+  Method T DeserializeCompressed[T](Byte[], BenScr.Serialization.SerializationLimits)
+  Method T Deserialize[T](Byte[], BenScr.Serialization.SerializationLimits)
+  Method T LoadCompressed[T](System.String, T, BenScr.Serialization.SerializationLimits)
+  Method T Load[T](System.String, T, BenScr.Serialization.SerializationLimits)
+  Method T Read[T](System.IO.Stream, BenScr.Serialization.SerializationLimits)
+  Method Void SaveCompressed[T](System.String, T, System.IO.Compression.CompressionLevel, BenScr.Serialization.SerializationLimits)
+  Method Void Save[T](System.String, T, BenScr.Serialization.SerializationLimits)
+  Method Void Write[T](System.IO.Stream, T, BenScr.Serialization.SerializationLimits)

@@ -1,0 +1,31 @@
+BenScr.Serialization.Binary : System.Object
+  Field MessagePack.MessagePackSerializerOptions DefaultMsgPack
+  Method Byte[] Serialize[T](T, MessagePack.MessagePackSerializerOptions)
+  Method T Load[T](System.String, T, MessagePack.MessagePackSerializerOptions)
+  Method Void Save[T](System.String, T, MessagePack.MessagePackSerializerOptions)
+BenScr.Serialization.FileConverter : System.Object
+  Method Void ConvertTo(System.String, BenScr.Serialization.Format, BenScr.Serialization.Format, System.String)
+BenScr.Serialization.Format : System.Enum
+  Field BenScr.Serialization.Format Binary
+  Field BenScr.Serialization.Format Json
+  Field BenScr.Serialization.Format Xml
+  Field Int32 value__
+BenScr.Serialization.Json : System.Object
+  Field System.Text.Json.JsonSerializerOptions DefaultJson
+  Field System.Text.Json.JsonSerializerOptions FormatedJson
+  Method Byte[] SerializeCompressed[T](T, System.IO.Compression.CompressionLevel, System.Text.Json.JsonSerializerOptions)
+  Method System.String Serialize[T](T, System.Text.Json.JsonSerializerOptions)
+  Method T LoadCompressed[T](System.String, T, System.Text.Json.JsonSerializerOptions)
+  Method T Load[T](System.String, T, System.Text.Json.JsonSerializerOptions)
+  Method Void SaveCompressed[T](System.String, T, System.IO.Compression.CompressionLevel, System.Text.Json.JsonSerializerOptions)
+  Method Void Save[T](System.String, T, System.Text.Json.JsonSerializerOptions)
+BenScr.Serialization.JsonSecure : System.Object
+  Method T Load[T](System.String, System.String, T, System.Text.Json.JsonSerializerOptions)
+  Method Void Save[T](System.String, System.String, T, System.Text.Json.JsonSerializerOptions)
+BenScr.Serialization.Xml : System.Object
+  Method Byte[] SerializeCompressed[T](T, System.IO.Compression.CompressionLevel)
+  Method Byte[] Serialize[T](T)
+  Method T LoadCompressed[T](System.String, T)
+  Method T Load[T](System.String, T)
+  Method Void SaveCompressed[T](System.String, T, System.IO.Compression.CompressionLevel)
+  Method Void Save[T](System.String, T)

@@ -1,0 +1,22 @@
+BenScr.EasySerialize.EasySerialize : System.Object
+  Field BenScr.Serialization.Format Format
+  Field Boolean IsCompressed
+  Field System.String MainPath
+  Method Boolean Serialize[T](System.String, T)
+  Method Int32 GetSavedFilesCount()
+  Method System.String GetPathOfKey[T](System.String)
+  Method System.String[] GetSavedFilesPath()
+  Method T Deserialize[T](System.String, T)
+  Method Void ClearAll(Boolean)
+  Method Void Delete[T](System.String)
+BenScr.EasySerialize.EasySerializeUtility : System.Object
+  Constructor Void .ctor()
+  Method System.String CombinePathWithExtension(BenScr.EasySerialize.Extension, System.String[])
+  Method System.String[] GetDirectoryFiles(System.String, Boolean)
+  Method Void DeleteAllDirectories(System.String, Boolean)
+  Method Void DeleteAllFromDirectory(System.String, Boolean)
+BenScr.EasySerialize.Extension : System.Enum
+  Field BenScr.EasySerialize.Extension bin
+  Field BenScr.EasySerialize.Extension json
+  Field BenScr.EasySerialize.Extension xml
+  Field Int32 value__

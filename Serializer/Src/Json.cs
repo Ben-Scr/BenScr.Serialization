@@ -1,119 +1,112 @@
-﻿using MessagePack;
+using System;
+using System.IO;
 using System.IO.Compression;
-using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
-namespace BenScr.Serialization
+namespace BenScr.Serialization;
+
+/// <summary>JSON and single-member gzip JSON. Caller-provided streams remain open.</summary>
+public static class Json
 {
-    public static class Json
+    /// <summary>Read-only defaults: public fields, case-insensitive names, compact output.</summary>
+    public static readonly JsonSerializerOptions DefaultJson = CreateDefaults(false);
+    /// <summary>Read-only indented defaults; the historical spelling is retained.</summary>
+    public static readonly JsonSerializerOptions FormatedJson = CreateDefaults(true);
+    /// <summary>Gets the read-only indented defaults.</summary>
+    public static JsonSerializerOptions FormattedJson => FormatedJson;
+
+    /// <summary>Serializes JSON within the encoded UTF-8 byte and nesting limits.</summary>
+    public static string Serialize<T>(T obj, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+        => Encoding.UTF8.GetString(Encode(obj, options, limits ?? SerializationLimits.Default));
+
+    /// <summary>Parses one JSON value. JSON null returns default(T); malformed input throws JsonException.</summary>
+    public static T? Deserialize<T>(string json, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
     {
-        public static readonly JsonSerializerOptions DefaultJson = new JsonSerializerOptions
-        {
-            IncludeFields = true,
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = false
-        };
-        public static readonly JsonSerializerOptions FormatedJson = new JsonSerializerOptions
-        {
-            IncludeFields = true,
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true
-        };
+        ArgumentNullException.ThrowIfNull(json);
+        limits ??= SerializationLimits.Default;
+        PayloadIO.CheckLength(Encoding.UTF8.GetByteCount(json), limits.MaxBytes);
+        return JsonSerializer.Deserialize<T>(json, Prepare(options, limits));
+    }
 
-        public static void Save<T>(string path, T obj, JsonSerializerOptions? options = null)
-        {
-            string dirPath = Path.GetDirectoryName(path);
+    /// <summary>Serializes to one gzip member; JSON and compressed bytes obey the byte limit.</summary>
+    public static byte[] SerializeCompressed<T>(T obj, CompressionLevel compressionLevel = CompressionLevel.Fastest,
+        JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        return PayloadIO.Compress(Encode(obj, options, limits), compressionLevel, limits.MaxBytes);
+    }
 
-            if (!string.IsNullOrEmpty(dirPath) && !Directory.Exists(dirPath))
-                Directory.CreateDirectory(dirPath);
+    /// <summary>Expands one gzip JSON member within the byte limit, validates its footer and parses it.</summary>
+    public static T? DeserializeCompressed<T>(byte[] bytes, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        return Decode<T>(PayloadIO.Expand(bytes, limits.MaxBytes), options, limits);
+    }
 
-            using FileStream fs = new FileStream(
-                path, FileMode.Create, FileAccess.Write, FileShare.None,
-                bufferSize: 1 << 20, FileOptions.SequentialScan);
+    /// <summary>Writes a complete UTF-8 JSON value without closing the stream; write errors propagate.</summary>
+    public static void Write<T>(Stream destination, T obj, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        destination.Write(Encode(obj, options, limits ?? SerializationLimits.Default));
+    }
 
-            options ??= DefaultJson;
+    /// <summary>Reads one UTF-8 JSON document to EOF without closing the stream, enforcing byte limits.</summary>
+    public static T? Read<T>(Stream source, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        return Decode<T>(PayloadIO.Read(source, limits.MaxBytes), options, limits);
+    }
 
-            using (fs)
-            {
-                JsonSerializer.Serialize(fs, obj, options);
-            }
-        }
-        public static void SaveCompressed<T>(string path, T obj, CompressionLevel compressionLevel = CompressionLevel.Fastest, JsonSerializerOptions? options = null)
-        {
-            string dirPath = Path.GetDirectoryName(path);
+    /// <summary>Replaces a file after successful serialization; creates missing parent directories.</summary>
+    public static void Save<T>(string path, T obj, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+        => PayloadIO.Save(path, Encode(obj, options, limits ?? SerializationLimits.Default));
 
-            if (!string.IsNullOrEmpty(dirPath) && !Directory.Exists(dirPath))
-                Directory.CreateDirectory(dirPath);
+    /// <summary>Saves gzip JSON; supplied JSON options are honored.</summary>
+    public static void SaveCompressed<T>(string path, T obj, CompressionLevel compressionLevel = CompressionLevel.Fastest,
+        JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+        => PayloadIO.Save(path, SerializeCompressed(obj, compressionLevel, options, limits));
 
-            using var fs = new FileStream(
-                path,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.None,
-                bufferSize: 1 << 20,
-                options: FileOptions.SequentialScan);
+    /// <summary>Loads JSON; only a missing file or JSON null returns defaultValue. Other failures propagate.</summary>
+    public static T Load<T>(string path, T defaultValue = default!, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        byte[]? bytes = PayloadIO.Load(path, limits.MaxBytes);
+        return bytes is null ? defaultValue : Decode<T>(bytes, options, limits) ?? defaultValue;
+    }
 
-            options ??= DefaultJson;
+    /// <summary>Loads gzip JSON; only a missing file or JSON null returns defaultValue.</summary>
+    public static T LoadCompressed<T>(string path, T defaultValue = default!, JsonSerializerOptions? options = null, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        byte[]? bytes = PayloadIO.Load(path, limits.MaxBytes);
+        return bytes is null ? defaultValue : DeserializeCompressed<T>(bytes, options, limits) ?? defaultValue;
+    }
 
-            using var gzip = new GZipStream(fs, compressionLevel, leaveOpen: false);
-            JsonSerializer.Serialize(gzip, obj, DefaultJson);
-        }
+    internal static byte[] Encode<T>(T obj, JsonSerializerOptions? options, SerializationLimits limits)
+    {
+        using var stream = new PayloadIO.LimitedMemoryStream(limits.MaxBytes);
+        JsonSerializer.Serialize(stream, obj, Prepare(options, limits));
+        return stream.ToArray();
+    }
 
-        public static T Load<T>(string path, T defaultValue = default!, JsonSerializerOptions? options = null)
-        {
-            if (!File.Exists(path)) return defaultValue;
+    internal static T? Decode<T>(byte[] bytes, JsonSerializerOptions? options, SerializationLimits limits)
+    {
+        PayloadIO.CheckLength(bytes.Length, limits.MaxBytes);
+        return JsonSerializer.Deserialize<T>(bytes.AsSpan(), Prepare(options, limits));
+    }
 
-            using FileStream fs = new FileStream(
-                path, FileMode.Open, FileAccess.Read, FileShare.Read,
-                bufferSize: 1 << 20, FileOptions.SequentialScan);
+    private static JsonSerializerOptions Prepare(JsonSerializerOptions? options, SerializationLimits limits)
+    {
+        var result = new JsonSerializerOptions(options ?? DefaultJson);
+        result.MaxDepth = Math.Min(result.MaxDepth == 0 ? 64 : result.MaxDepth, limits.MaxDepth);
+        return result;
+    }
 
-            options ??= DefaultJson;
-
-            using (fs)
-            {
-                return JsonSerializer.Deserialize<T>(fs, options) ?? defaultValue;
-            }
-        }
-
-        public static T LoadCompressed<T>(string path, T defaultValue = default!, JsonSerializerOptions? options = null)
-        {
-            if (!File.Exists(path)) return defaultValue;
-
-            using var fs = new FileStream(
-                path,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read,
-                bufferSize: 1 << 20,
-                options: FileOptions.SequentialScan);
-
-            options ??= DefaultJson;
-
-            using var gzip = new GZipStream(fs, CompressionMode.Decompress, leaveOpen: false);
-            return JsonSerializer.Deserialize<T>(gzip, DefaultJson) ?? defaultValue;
-        }
-
-        public static string Serialize<T>(T obj, JsonSerializerOptions? options = null)
-        {
-            options ??= DefaultJson;
-            return JsonSerializer.Serialize(obj, options);
-        }
-
-        public static byte[] SerializeCompressed<T>(
-            T obj,
-            CompressionLevel compressionLevel = CompressionLevel.Fastest,
-            JsonSerializerOptions? options = null)
-        {
-            options ??= DefaultJson;
-
-            using var memoryStream = new MemoryStream();
-
-            using (var gzip = new GZipStream(memoryStream, compressionLevel, leaveOpen: true))
-            {
-                JsonSerializer.Serialize(gzip, obj, options);
-            }
-
-            return memoryStream.ToArray();
-        }
+    private static JsonSerializerOptions CreateDefaults(bool indented)
+    {
+        var result = new JsonSerializerOptions { IncludeFields = true, PropertyNameCaseInsensitive = true, WriteIndented = indented };
+        result.MakeReadOnly(populateMissingResolver: true);
+        return result;
     }
 }

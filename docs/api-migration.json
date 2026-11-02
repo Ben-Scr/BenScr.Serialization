@@ -1,0 +1,357 @@
+{
+  "mappings": [
+    {
+      "member": "Field MessagePack.MessagePackSerializerOptions DefaultMsgPack",
+      "type": "BenScr.Serialization.Binary",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Binary",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Byte[] Serialize[T](T, MessagePack.MessagePackSerializerOptions)",
+      "type": "BenScr.Serialization.Binary",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Binary",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method T Load[T](System.String, T, MessagePack.MessagePackSerializerOptions)",
+      "type": "BenScr.Serialization.Binary",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Binary",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Void Save[T](System.String, T, MessagePack.MessagePackSerializerOptions)",
+      "type": "BenScr.Serialization.Binary",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Binary",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Void ConvertTo(System.String, BenScr.Serialization.Format, BenScr.Serialization.Format, System.String)",
+      "type": "BenScr.Serialization.FileConverter",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.FileConverter.ConvertTo<T>",
+      "rationale": "An explicit schema fixes unreliable object-based conversion, particularly XML.",
+      "status": "replaced"
+    },
+    {
+      "member": "Field BenScr.Serialization.Format Binary",
+      "type": "BenScr.Serialization.Format",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Format",
+      "rationale": "Enum names and values are unchanged.",
+      "status": "retained"
+    },
+    {
+      "member": "Field BenScr.Serialization.Format Json",
+      "type": "BenScr.Serialization.Format",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Format",
+      "rationale": "Enum names and values are unchanged.",
+      "status": "retained"
+    },
+    {
+      "member": "Field BenScr.Serialization.Format Xml",
+      "type": "BenScr.Serialization.Format",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Format",
+      "rationale": "Enum names and values are unchanged.",
+      "status": "retained"
+    },
+    {
+      "member": "Field Int32 value__",
+      "type": "BenScr.Serialization.Format",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Format",
+      "rationale": "Enum names and values are unchanged.",
+      "status": "retained"
+    },
+    {
+      "member": "Field System.Text.Json.JsonSerializerOptions DefaultJson",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Shared defaults are read-only; callers clone to customize.",
+      "status": "retained_immutable"
+    },
+    {
+      "member": "Field System.Text.Json.JsonSerializerOptions FormatedJson",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Shared defaults are read-only; callers clone to customize.",
+      "status": "retained_immutable"
+    },
+    {
+      "member": "Method Byte[] SerializeCompressed[T](T, System.IO.Compression.CompressionLevel, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method System.String Serialize[T](T, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method T LoadCompressed[T](System.String, T, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method T Load[T](System.String, T, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Void SaveCompressed[T](System.String, T, System.IO.Compression.CompressionLevel, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Void Save[T](System.String, T, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.Json",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Json",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method T Load[T](System.String, System.String, T, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.JsonSecure",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.JsonSecure",
+      "rationale": "Authenticated BSSJ1 replaces unauthenticated CBC; failures propagate.",
+      "status": "retained_call_shape_new_format"
+    },
+    {
+      "member": "Method Void Save[T](System.String, System.String, T, System.Text.Json.JsonSerializerOptions)",
+      "type": "BenScr.Serialization.JsonSecure",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.JsonSecure",
+      "rationale": "Authenticated BSSJ1 replaces unauthenticated CBC; failures propagate.",
+      "status": "retained_call_shape_new_format"
+    },
+    {
+      "member": "Method Byte[] SerializeCompressed[T](T, System.IO.Compression.CompressionLevel)",
+      "type": "BenScr.Serialization.Xml",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Xml",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Byte[] Serialize[T](T)",
+      "type": "BenScr.Serialization.Xml",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Xml",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method T LoadCompressed[T](System.String, T)",
+      "type": "BenScr.Serialization.Xml",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Xml",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method T Load[T](System.String, T)",
+      "type": "BenScr.Serialization.Xml",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Xml",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Void SaveCompressed[T](System.String, T, System.IO.Compression.CompressionLevel)",
+      "type": "BenScr.Serialization.Xml",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Xml",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Method Void Save[T](System.String, T)",
+      "type": "BenScr.Serialization.Xml",
+      "source_inventory": "docs/LegacySerializerApi.txt",
+      "replacement": "BenScr.Serialization.Xml",
+      "rationale": "Namespace and behavior retained with documented validation and limits.",
+      "status": "retained_with_optional_limits"
+    },
+    {
+      "member": "Field BenScr.Serialization.Format Format",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Field Boolean IsCompressed",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Field System.String MainPath",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method Boolean Serialize[T](System.String, T)",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method Int32 GetSavedFilesCount()",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method System.String GetPathOfKey[T](System.String)",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method System.String[] GetSavedFilesPath()",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method T Deserialize[T](System.String, T)",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method Void ClearAll(Boolean)",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method Void Delete[T](System.String)",
+      "type": "BenScr.EasySerialize.EasySerialize",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Constructor Void .ctor()",
+      "type": "BenScr.EasySerialize.EasySerializeUtility",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method System.String CombinePathWithExtension(BenScr.EasySerialize.Extension, System.String[])",
+      "type": "BenScr.EasySerialize.EasySerializeUtility",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method System.String[] GetDirectoryFiles(System.String, Boolean)",
+      "type": "BenScr.EasySerialize.EasySerializeUtility",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method Void DeleteAllDirectories(System.String, Boolean)",
+      "type": "BenScr.EasySerialize.EasySerializeUtility",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Method Void DeleteAllFromDirectory(System.String, Boolean)",
+      "type": "BenScr.EasySerialize.EasySerializeUtility",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Field BenScr.EasySerialize.Extension bin",
+      "type": "BenScr.EasySerialize.Extension",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Field BenScr.EasySerialize.Extension json",
+      "type": "BenScr.EasySerialize.Extension",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Field BenScr.EasySerialize.Extension xml",
+      "type": "BenScr.EasySerialize.Extension",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    },
+    {
+      "member": "Field Int32 value__",
+      "type": "BenScr.EasySerialize.Extension",
+      "source_inventory": "docs/LegacyEasySerializeApi.txt",
+      "replacement": "Application-owned explicit paths and Json/Xml/Binary or System.IO",
+      "rationale": "Distinct keyed-filesystem wrapper; not an alias of SerializerCS. Private source is not part of this migration.",
+      "status": "outside_migration_scope"
+    }
+  ],
+  "schema_version": 1
+}

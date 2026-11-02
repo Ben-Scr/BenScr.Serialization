@@ -1,35 +1,42 @@
-﻿using BenScr.Serialization;
+using System;
+using System.IO;
+using BenScr.Serialization;
 
-public static class Program
+string directory = Path.Combine(Path.GetTempPath(), "benscr-serialization-example-" + Guid.NewGuid().ToString("N"));
+Directory.CreateDirectory(directory);
+try
 {
-    public struct Vector2
-    {
-        public float X;
-        public float Y;
+    var source = new Player { Name = "Ada", Score = 42 };
+    string jsonPath = Path.Combine(directory, "player.json");
+    Json.Save(jsonPath, source);
+    FileConverter.ConvertTo<Player>(jsonPath, Format.Json, Format.Xml);
+    Player xml = Xml.Load<Player>(Path.Combine(directory, "player.xml"));
+    Check(xml.Name == "Ada" && xml.Score == 42, "typed JSON to XML conversion");
+    byte[] binary = Binary.Serialize(source);
+    Check(Binary.Deserialize<Player>(binary)!.Score == 42, "MessagePack round trip");
+    byte[] compressed = Json.SerializeCompressed(source);
+    Check(Json.DeserializeCompressed<Player>(compressed)!.Name == "Ada", "gzip JSON round trip");
+    byte[] encrypted = JsonSecure.Encrypt("example-only-passphrase", source);
+    Check(JsonSecure.Decrypt<Player>("example-only-passphrase", encrypted)!.Score == 42, "authenticated encryption");
+    using var stream = new MemoryStream();
+    Json.Write(stream, source);
+    stream.Position = 0;
+    Check(Json.Read<Player>(stream)!.Score == 42 && stream.CanRead, "caller-owned stream");
+    Console.WriteLine("All package consumer scenarios passed.");
+}
+finally
+{
+    Directory.Delete(directory, recursive: true);
+}
 
-        public override string ToString()
-        {
-            return $"({X}, {Y})";
-        }
-    }
+static void Check(bool condition, string description)
+{
+    if (!condition) { throw new InvalidOperationException(description); }
+    Console.WriteLine("Passed: " + description);
+}
 
-    public static void Main(string[] args)
-    {
-        const string pathJson = "Preview.json", pathXml = "Preview.xml", pathBin = "Preview.bin";
-        Vector2 vec2 = new Vector2 { X = 1.0f, Y = 2.0f };
-
-        Console.WriteLine("Object to save: " + vec2);
-
-        Json.Save(pathJson, vec2);
-        Vector2 loadedVec2 = Json.Load<Vector2>(pathJson);
-        Console.WriteLine("Json: " + loadedVec2);
-        
-        Xml.Save(pathXml, vec2);
-        loadedVec2 = Xml.Load<Vector2>(pathXml);
-        Console.WriteLine("Xml: " + loadedVec2);
-
-        Binary.Save(pathBin, vec2);
-        loadedVec2 = Binary.Load<Vector2>(pathBin);
-        Console.WriteLine("Binary: " + loadedVec2);
-    }
+public sealed class Player
+{
+    public string Name { get; set; } = "";
+    public int Score { get; set; }
 }

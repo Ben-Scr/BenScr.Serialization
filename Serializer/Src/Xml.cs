@@ -1,90 +1,111 @@
-﻿using System.IO.Compression;
-using System.Text.Json;
+using System;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
-namespace BenScr.Serialization
+namespace BenScr.Serialization;
+
+/// <summary>Typed XML and single-member gzip XML with byte limits and external entities disabled.</summary>
+public static class Xml
 {
-    public static class Xml
+    /// <summary>Serializes to UTF-8 XML, including a declaration, within the encoded byte limit.</summary>
+    public static byte[] Serialize<T>(T obj, SerializationLimits? limits = null)
     {
-        public static void Save<T>(string path, T obj)
+        limits ??= SerializationLimits.Default;
+        using var stream = new PayloadIO.LimitedMemoryStream(limits.MaxBytes);
+        using (XmlWriter writer = XmlWriter.Create(stream, new XmlWriterSettings { Encoding = new UTF8Encoding(false), CloseOutput = false }))
         {
-            string dirPath = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(dirPath))
-                Directory.CreateDirectory(dirPath);
-
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-            FileStream fs = new FileStream(path, FileMode.Create);
-            xmlSerializer.Serialize(fs, obj);
-            fs.Close();
+            new XmlSerializer(typeof(T)).Serialize(writer, obj);
         }
+        byte[] result = stream.ToArray();
+        Validate(result, limits);
+        return result;
+    }
 
-        public static void SaveCompressed<T>(string path, T obj, CompressionLevel compressionLevel = CompressionLevel.Fastest)
+    /// <summary>Parses one typed XML document; DTDs, external entities and trailing documents are rejected.</summary>
+    public static T? Deserialize<T>(byte[] bytes, SerializationLimits? limits = null)
+    {
+        ArgumentNullException.ThrowIfNull(bytes);
+        limits ??= SerializationLimits.Default;
+        PayloadIO.CheckLength(bytes.Length, limits.MaxBytes);
+        Validate(bytes, limits);
+        using var stream = new MemoryStream(bytes, writable: false);
+        using XmlReader reader = XmlReader.Create(stream, Settings(limits));
+        return (T?)new XmlSerializer(typeof(T)).Deserialize(reader);
+    }
+
+    /// <summary>Serializes XML and compresses it as one gzip member within both byte limits.</summary>
+    public static byte[] SerializeCompressed<T>(T obj, CompressionLevel compressionLevel = CompressionLevel.Fastest, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        return PayloadIO.Compress(Serialize(obj, limits), compressionLevel, limits.MaxBytes);
+    }
+
+    /// <summary>Expands one gzip member with footer validation, then parses typed XML.</summary>
+    public static T? DeserializeCompressed<T>(byte[] bytes, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        return Deserialize<T>(PayloadIO.Expand(bytes, limits.MaxBytes), limits);
+    }
+
+    /// <summary>Writes typed XML without closing the caller's stream.</summary>
+    public static void Write<T>(Stream destination, T obj, SerializationLimits? limits = null)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        destination.Write(Serialize(obj, limits));
+    }
+
+    /// <summary>Reads typed XML to EOF without closing the caller's stream.</summary>
+    public static T? Read<T>(Stream source, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        return Deserialize<T>(PayloadIO.Read(source, limits.MaxBytes), limits);
+    }
+
+    /// <summary>Replaces a file after successful serialization, creating parent directories as needed.</summary>
+    public static void Save<T>(string path, T obj, SerializationLimits? limits = null) => PayloadIO.Save(path, Serialize(obj, limits));
+
+    /// <summary>Saves one gzip member containing typed XML.</summary>
+    public static void SaveCompressed<T>(string path, T obj, CompressionLevel compressionLevel = CompressionLevel.Fastest, SerializationLimits? limits = null)
+        => PayloadIO.Save(path, SerializeCompressed(obj, compressionLevel, limits));
+
+    /// <summary>Loads typed XML; only a missing file or XML nil returns defaultValue.</summary>
+    public static T Load<T>(string path, T defaultValue = default!, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        byte[]? bytes = PayloadIO.Load(path, limits.MaxBytes);
+        return bytes is null ? defaultValue : Deserialize<T>(bytes, limits) ?? defaultValue;
+    }
+
+    /// <summary>Loads gzip XML; only a missing file or XML nil returns defaultValue.</summary>
+    public static T LoadCompressed<T>(string path, T defaultValue = default!, SerializationLimits? limits = null)
+    {
+        limits ??= SerializationLimits.Default;
+        byte[]? bytes = PayloadIO.Load(path, limits.MaxBytes);
+        return bytes is null ? defaultValue : DeserializeCompressed<T>(bytes, limits) ?? defaultValue;
+    }
+
+    private static XmlReaderSettings Settings(SerializationLimits limits) => new()
+    {
+        DtdProcessing = DtdProcessing.Prohibit,
+        XmlResolver = null,
+        MaxCharactersInDocument = limits.MaxBytes,
+        CloseInput = false
+    };
+
+    private static void Validate(byte[] bytes, SerializationLimits limits)
+    {
+        using var input = new MemoryStream(bytes, writable: false);
+        using XmlReader reader = XmlReader.Create(input, Settings(limits));
+        // Inspect unknown elements too, before object construction or arbitrary property setters.
+        while (reader.Read())
         {
-            string dirPath = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(dirPath) && !Directory.Exists(dirPath))
-                Directory.CreateDirectory(dirPath);
-
-            using var fs = new FileStream(
-                path,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.None,
-                bufferSize: 1 << 20,
-                options: FileOptions.SequentialScan);
-
-
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-            using var gzip = new GZipStream(fs, compressionLevel, leaveOpen: false);
-            xmlSerializer.Serialize(gzip, obj);
-        }
-
-        public static T Load<T>(string path, T defaultValue = default)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-            FileStream fs = new FileStream(path, FileMode.Open);
-
-            using (fs)
+            if (reader.NodeType == XmlNodeType.Element && reader.Depth >= limits.MaxDepth)
             {
-                return (T)xmlSerializer.Deserialize(fs) ?? defaultValue;
+                throw new InvalidDataException("XML exceeds the configured nesting limit.");
             }
-
-        }
-
-        public static T LoadCompressed<T>(string path, T defaultValue = default!)
-        {
-            if (!File.Exists(path)) return defaultValue;
-
-            using var fs = new FileStream(
-                path,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read,
-                bufferSize: 1 << 20,
-                options: FileOptions.SequentialScan);
-
-            using var gzip = new GZipStream(fs, CompressionMode.Decompress, leaveOpen: false);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-            return (T)xmlSerializer.Deserialize(gzip) ?? defaultValue;
-        }
-
-        public static byte[] Serialize<T>(T obj)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-            using var memoryStream = new MemoryStream();
-            xmlSerializer.Serialize(memoryStream, obj);
-            return memoryStream.ToArray();
-        }
-        public static byte[] SerializeCompressed<T>(T obj, CompressionLevel compressionLevel = CompressionLevel.Fastest)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-            using var memoryStream = new MemoryStream();
-
-            using (var gzip = new GZipStream(memoryStream, compressionLevel, leaveOpen: true))
-            {
-                xmlSerializer.Serialize(gzip, obj);
-            }
-
-            return memoryStream.ToArray();
         }
     }
 }
